@@ -171,6 +171,10 @@ public class ListenerFriend implements Listener{
                     if(Friend.clickItem.containsKey(player)){
                         //邮寄物品
                         if(data.equals("true")){
+                            if(player.getGamemode() == 1){
+                                player.sendMessage("§c创造模式无法邮寄物品");
+                                return;
+                            }
                             int coin = Friend.getFriend().getConfig().getInt("物品邮寄手续费");
                             if(EconomyAPI.getInstance().myMoney(player) >= coin){
                                 //发送
@@ -228,10 +232,10 @@ public class ListenerFriend implements Listener{
                     Friend.getFriend().delItem(player.getName(),itemTile.getTarget(),Integer.parseInt(data));
                     Item item = itemTile.getItem();
                     if(player.getInventory().canAddItem(item)){
-                        player.sendMessage("§a[包裹]领取成功");
+                        player.sendMessage("§a[包裹]§a领取成功");
                         player.getInventory().addItem(item);
                     }else{
-                        player.sendMessage("§a[包裹]领取成功 你的背包满啦，掉出来啦");
+                        player.sendMessage("§a[包裹]§b领取成功 你的背包满啦，掉出来啦");
                         player.level.dropItem(player.getPosition(),item);
                     }
                     Friend.playerInventory.remove(player);
@@ -296,7 +300,7 @@ public class ListenerFriend implements Listener{
                                     playerApplyFriendEvent event1 = new playerApplyFriendEvent(player,target);
                                     Server.getInstance().getPluginManager().callEvent(event1);
                                 }else{
-                                    player.sendMessage("§e[好友]请耐心等待回复");
+                                    player.sendMessage("§e[好友]§a请耐心等待回复");
                                 }
                             }
                             break;
@@ -409,17 +413,23 @@ public class ListenerFriend implements Listener{
                     int coin = Friend.getFriend().getConfig().getInt("物品邮寄手续费");
                     Item item = Friend.clickItem.get(player);
                     Friend.clickItem.remove(player);
+                    try {
+                        target = Friend.clickPlayer.get(player);
+                        itemTile itemTile = new itemTile(new Date(),message,player.getName(),item);
+                        Player player1 = Server.getInstance().getPlayer(target);
+                        if(player1 != null){
+                            playerGetItemEvent event1 = new playerGetItemEvent(player1,player.getName(),itemTile);
+                            Server.getInstance().getPluginManager().callEvent(event1);
+                        }
+                        player.sendMessage("§e[包裹]§a包裹已成功送出");
+
+                    }catch (Exception e){
+                        player.sendMessage("§e[包裹]§c包裹异常，请重新邮寄");
+                        return;
+                    }
                     EconomyAPI.getInstance().reduceMoney(player,coin);
                     player.getInventory().removeItem(item);
-                    target = Friend.clickPlayer.get(player);
-                    itemTile itemTile = new itemTile(new Date(),message,player.getName(),item);
-                    Friend.getFriend().addItems(target,player.getName(),itemTile);
-                    Player player1 = Server.getInstance().getPlayer(target);
-                    if(player1 != null){
-                        playerGetItemEvent event1 = new playerGetItemEvent(player1,player.getName(),itemTile);
-                        Server.getInstance().getPluginManager().callEvent(event1);
-                    }
-                    player.sendMessage("§e[包裹]包裹已成功送出");
+
                 }else{
                     Friend.clickItem.remove(player);
                     createForm.sendPlayerInventorys(player);
@@ -664,6 +674,7 @@ public class ListenerFriend implements Listener{
     @EventHandler
     public void onGet(playerGetItemEvent event){
         Player player = event.getPlayer();
+        Friend.getFriend().addItems(event.getTarget(),player.getName(),event.getTile());
         player.sendMessage("§e[包裹]§a你获得了来自§e"+event.getTarget()+"§a的一个包裹\n§d留言: §r"+event.getTile().getMessage());
     }
 
