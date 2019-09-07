@@ -42,6 +42,8 @@ public class Friend extends PluginBase{
     static LinkedHashMap<Player,Boolean> canBlack = new LinkedHashMap<>();//拉黑
 
     static LinkedHashMap<Player,Boolean> canSend = new LinkedHashMap<>();//
+
+    public LinkedHashMap<Player,Player> tp = new LinkedHashMap<>();
     private static Friend friend;
 
     public static boolean loadVIP = false;

@@ -7,6 +7,7 @@ import Friends.utils.itemTile;
 import Friends.utils.playerChatMessage;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
 import cn.nukkit.network.protocol.ModalFormRequestPacket;
@@ -44,6 +45,7 @@ public class createForm {
             put("邮寄物品","textures/ui/trade_icon");
             put("加入黑名单","textures/ui/blindness_effect");
             put("删除好友","textures/ui/trash_default");
+            put("传送好友","textures/ui/FriendsDiversity");
             put("返回","textures/ui/refresh_light");
         }
     };
@@ -73,8 +75,9 @@ public class createForm {
                     break;
                 case "仓库":
                     int c = Friend.getFriend().getCounts(player.getName());
-                    if(c > 0)
+                    if(c > 0) {
                         name = name + "§c[你有 §d" + c + "§c件物品未领取]";
+                    }
                     break;
                 case "申请列表":
                     name = name + "§6(§c" + Friend.getFriend().getAccepts(player.getName()).size() + "§6)";
@@ -257,8 +260,9 @@ public class createForm {
         for(String text:list.keySet()){
             String s = text;
             if(text.equals("加入黑名单")){
-                if(Friend.getFriend().isBlack(player.getName(),target))
+                if(Friend.getFriend().isBlack(player.getName(),target)) {
                     s = "移出黑名单";
+                }
             }
             buttons.add(getButton(s,list.get(text)));
         }
@@ -446,11 +450,16 @@ public class createForm {
         send(player,id,data);
     }
 
-    public static void sendGroup(Player player){
-        int id = 0xddea0017;
-        FormWindowSimple windowSimple = new FormWindowSimple("好友系统----群组","");
-
-
+    public static void sendTeleport(Player target,Player player){
+        int id = 0xddea0018;
+        FormWindowSimple windowSimple = new FormWindowSimple("好友系统----传送请求","");
+        String s = "§a§l您的好友向你发起传送请求"+"\n"+
+                   "§a§l好友名称: §7"+player.getName()+"\n\n"+
+                   "§a§l好友所在地图: "+player.getLevel().getFolderName()+"\n\n";
+        windowSimple.setContent(s);
+        windowSimple.addButton(new ElementButton("接受"));
+        windowSimple.addButton(new ElementButton("拒绝"));
+        target.showFormWindow(windowSimple,id);
     }
 
 

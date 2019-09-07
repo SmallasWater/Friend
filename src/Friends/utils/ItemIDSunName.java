@@ -2059,14 +2059,14 @@ public enum ItemIDSunName {
 
     public static String getIDByName(Item item) {
         String name = getIDByName(item.getId() + ":" + item.getDamage());
-        if(name == null){
-            if(item.hasCustomName()){
-                return item.getCustomName();
-            }else{
-                return item.getName();
-            }
+        if(item.hasCustomName()){
+            return item.getCustomName();
         }else{
-            return name;
+            if(name == null){
+                return item.getName();
+            }else{
+                return name;
+            }
         }
     }
 

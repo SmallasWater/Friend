@@ -249,16 +249,18 @@ public class ListenerFriend implements Listener{
                 if(Friend.getFriend().isFriend(player.getName(),target)){
                     switch (Integer.parseInt(data)){
                         case 0:
-                            if(Friend.getFriend().isBlack(player.getName(),target) || Friend.getFriend().isBlack(target,player.getName()))
+                            if(Friend.getFriend().isBlack(player.getName(),target) || Friend.getFriend().isBlack(target,player.getName())) {
                                 player.sendMessage("§c"+target+"在你的黑名单内或你在他的黑名单内，无法给他发送消息，如需要聊天，请解除黑名单关系");
-                            else
+                            } else {
                                 createForm.sendChat(player);
+                            }
                             break;
                         case 1:
-                            if(!Friend.getFriend().isBlack(player.getName(),target) && !Friend.getFriend().isBlack(target,player.getName()))
+                            if(!Friend.getFriend().isBlack(player.getName(),target) && !Friend.getFriend().isBlack(target,player.getName())) {
                                 createForm.sendPlayerInventorys(player);
-                            else
+                            } else {
                                 player.sendMessage("§c"+Friend.clickPlayer.get(player)+"在你的黑名单内或你在他的黑名单内，无法给他发送包裹，如需发送，请解除黑名单关系");
+                            }
                             break;
                         case 2:
                             if(Friend.getFriend().isBlack(player.getName(),target)){
@@ -275,7 +277,25 @@ public class ListenerFriend implements Listener{
 
                             break;
                         case 4:
+                            target = Friend.clickPlayer.get(player);
+                            if(!Friend.getFriend().isBlack(player.getName(),target) && !Friend.getFriend().isBlack(target,player.getName())) {
+                                Player tar = Server.getInstance().getPlayer(target);
+                                if(tar != null){
+                                    Friend.getFriend().tp.put(tar,player);
+                                    player.sendMessage("§a已向"+Friend.clickPlayer.get(player)+"发送请求..等待回应");
+                                    createForm.sendTeleport(tar,player);
+                                }else{
+                                    player.sendMessage("§c"+Friend.clickPlayer.get(player)+"不在线");
+                                }
+//
+
+                            } else {
+                                player.sendMessage("§c"+Friend.clickPlayer.get(player)+"在你的黑名单内或你在他的黑名单内，无法向他发起传送请求");
+                            }
+                            break;
+                        case 5:
                             createForm.sendMenu(player);
+                            default:break;
                     }
                 }else{
                     switch (Integer.parseInt(data)){
@@ -316,6 +336,7 @@ public class ListenerFriend implements Listener{
                         case 3:
                             createForm.sendMenu(player);
                             break;
+                            default:break;
                     }
                 }
                 break;
@@ -489,6 +510,7 @@ public class ListenerFriend implements Listener{
                     case 4:
                         createForm.sendMenu(player);
                         break;
+                        default:break;
                 }
                 break;
             case 0xddea0015:
@@ -571,6 +593,25 @@ public class ListenerFriend implements Listener{
                 }
 
                 break;
+            case 0xddea0018:
+                Player tar = Friend.getFriend().tp.get(player);
+                if("null".equals(data)) {
+                    return;
+                }
+                Friend.getFriend().tp.remove(player);
+                if(tar.isOnline()){
+                    if(Integer.parseInt(data) == 0){
+                        tar.sendMessage("§a[好友]传送成功!...");
+                        player.sendMessage("§a[好友]"+tar.getName()+"来到了你的身边");
+                        tar.teleport(player);
+                    }else{
+                        tar.sendMessage("§a[好友]§c"+player.getName()+"拒绝了你的传送请求");
+                    }
+                }else{
+                    player.sendMessage("§a[好友]"+tar.getName()+"离线了");
+                }
+                break;
+                default:break;
         }
     }
     @EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
@@ -666,15 +707,16 @@ public class ListenerFriend implements Listener{
     public void onDel(playerDelFriendEvent event){
         Player player = event.getPlayer();
         Player player1 = Server.getInstance().getPlayer(event.getTarget());
-        if(player1 != null)
+        if(player1 != null) {
             player1.sendMessage("§d[好友]§c您的好友"+player.getName()+"解除了好友关系");
+        }
         Friend.getFriend().delFriend(player.getName(),event.getTarget());
     }
 
     @EventHandler
     public void onGet(playerGetItemEvent event){
         Player player = event.getPlayer();
-        Friend.getFriend().addItems(event.getTarget(),player.getName(),event.getTile());
+        Friend.getFriend().addItems(player.getName(),event.getTarget(),event.getTile());
         player.sendMessage("§e[包裹]§a你获得了来自§e"+event.getTarget()+"§a的一个包裹\n§d留言: §r"+event.getTile().getMessage());
     }
 
