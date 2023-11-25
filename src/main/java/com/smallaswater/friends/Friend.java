@@ -142,11 +142,12 @@ public class Friend extends PluginBase {
             int size = 0;
             for (String name : friendNames) {
                 PlayerConfig config1 = Friend.getPlayerConfig(name);
-                if (!name.toLowerCase().matches("(" + builder.append("[\\s\\S]*") + ")")
-                        && !config1.getPlayerSettings().getTitle().toLowerCase().matches("(" + builder.append("[\\s\\S]*") + ")")
-                        && !config1.getPlayerSettings().getHand().toLowerCase().matches("(" + builder.append("[\\s\\S]*") + ")")
+                if (get.contains(name)
                         || name.equals(player)
-                        || size >= Friend.getMaxListSize()) {
+                        || size >= Friend.getMaxListSize()
+                        || (!name.toLowerCase().matches("(" + builder.append("[\\s\\S]*") + ")")
+                        && !config1.getPlayerSettings().getTitle().toLowerCase().matches("(" + builder.append("[\\s\\S]*") + ")")
+                        && !config1.getPlayerSettings().getHand().toLowerCase().matches("(" + builder.append("[\\s\\S]*") + ")"))) {
                     continue;
                 }
                 get.add(name);
