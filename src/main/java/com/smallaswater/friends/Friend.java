@@ -16,6 +16,7 @@ import com.smallaswater.friends.utils.PlayerChatMessage;
 import com.smallaswater.friends.utils.items.ItemTile;
 import com.smallaswater.friends.variables.FriendVariable;
 import tip.utils.Api;
+import updata.AutoData;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +41,16 @@ public class Friend extends PluginBase {
     public static boolean loadVIP;
 
     public void onEnable() {
+        try {
+            if (Server.getInstance().getPluginManager().getPlugin("AutoUpData") != null) {
+                if (AutoData.defaultUpDataByMaven(this, this.getFile(), "com.smallaswater", "Friends", null)) {
+                    return;
+                }
+            }
+        } catch (Throwable e) {
+            this.getLogger().warning("插件自动更新失败！请检查AutoUpData前置插件！");
+        }
+
         File group;
         File file;
         Plugin plugin;
