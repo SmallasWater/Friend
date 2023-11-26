@@ -1,0 +1,16 @@
+name: Friends
+api: ["1.0.8"]
+version: "1.2.6"
+author: "若水"
+main: com.smallaswater.friends.Friend
+load: POSTWORLD
+
+commands:
+ 好友:
+  description: §6好友系统
+  usage: /好友
+
+
+permissions:
+ friends.fm:
+  default: op

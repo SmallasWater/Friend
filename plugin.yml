@@ -1,6 +1,6 @@
 name: Friends
 api: ["1.0.8"]
-version: "1.0.9[正式版]"
+version: "1.0.9"
 author: "若水"
 main: Friends.Friend
 load: POSTWORLD
