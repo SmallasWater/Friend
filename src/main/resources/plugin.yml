@@ -1,6 +1,6 @@
 name: Friends
 api: ["1.0.8"]
-version: "1.2.6-SNAPSHOT"
+version: "1.2.6"
 author: "若水"
 main: com.smallaswater.friends.Friend
 load: POSTWORLD
